@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TikTok</title>
+<style>
+@font-face {
+  font-family: 'TikTokSans';
+  src: url('Assets/fonts/webfonts/TikTokSans[opsz,slnt,wdth,wght].woff2') format('woff2-variations'),
+       url('Assets/fonts/variable/TikTokSans[opsz,slnt,wdth,wght].ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal oblique;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body { margin: 0; padding: 0; }
+
+.scale-wrapper { width: 100%; overflow: hidden; position: relative; }
+
+.tt-root {
+  width: 100vw; height: 100vh; background: white;
+  display: flex; flex-direction: row; align-items: flex-start;
+  position: relative; overflow: hidden;
+  font-family: 'TikTokSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ── SIDEBAR ── */
+.tt-sidebar {
+  width: 240px; background: white;
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 16px 20px; flex-shrink: 0; z-index: 10;
+}
+.tt-nav-container { padding: 12px 0 12px 9px; }
+.tt-search {
+  background: rgba(0,0,0,0.05); border-radius: 100px;
+  height: 40px; display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; color: rgba(0,0,0,0.34); font-size: 14px;
+}
+.tt-nav-section { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.tt-nav-items { display: flex; flex-direction: column; gap: 4px; }
+.tt-nav-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px; border-radius: 10px; cursor: pointer;
+  color: #202020; font-size: 16px; font-weight: 600; text-decoration: none;
+}
+.tt-nav-item:hover { background: rgba(0,0,0,0.05); }
+.tt-nav-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.tt-left-nav-btn {
+  background: #FE2C55; color: white; border: none; border-radius: 8px;
+  height: 48px; font-size: 16px; font-weight: 600; cursor: pointer;
+  width: 100%; font-family: inherit; transition: background 0.15s ease;
+}
+.tt-left-nav-btn:hover { background: #E5284D; }
+.tt-divider { height: 1px; background: rgba(0,0,0,0.1); }
+.tt-footer { font-size: 12px; color: rgba(0,0,0,0.48); line-height: 1.6; padding: 4px 8px; }
+.tt-footer-links { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; font-weight: 500; }
+
+/* ── MAIN ── */
+.tt-page {
+  flex: 1; min-width: 0; align-self: stretch; position: relative;
+  padding: 16px 0; display: flex; align-items: center; justify-content: center;
+}
+.tt-page img { height: 100%; object-fit: cover; display: block; }
+
+/* ── TOOLBAR — inside tt-root, anchored to its top-right corner ── */
+.tt-topnav {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 100;
+  top: 16px;
+  right: 20px;
+  font-family: 'TikTokSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toolbar {
+  background: white; border-radius: 99px;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.07);
+  display: flex; align-items: center; gap: 12px; padding: 6px;
+}
+.toolbar-pills { display: flex; align-items: center; }
+.toolbar-pill-btn {
+  height: 32px; display: flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: 999px;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.09px;
+  color: #202020; background: white; border: none;
+  cursor: pointer; font-family: inherit; white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.toolbar-pill-btn:hover { background: rgba(0,0,0,0.05); }
+.toolbar-pill-btn img { width: 16px; height: 16px; display: block; flex-shrink: 0; }
+.toolbar-login-btn {
+  background: #FE2C55; color: white; border: none; border-radius: 999px;
+  height: 32px; padding: 0 16px;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.09px;
+  cursor: pointer; font-family: inherit; white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.toolbar-login-btn:hover { background: #E5284D; }
+
+/* ══════════════════════════════════════════
+   OVERLAY + PANEL — position: fixed to body
+   Completely unaffected by transform: scale()
+   ══════════════════════════════════════════ */
+#ttOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.50);
+  z-index: 1000;
+  cursor: pointer;
+}
+#ttOverlay.open { display: block; }
+
+#loginPanel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+#loginPanel.open { display: flex; }
+
+/* Login panel card */
+.login-panel {
+  background: white;
+  border-radius: 16px;
+  width: 420px;
+  height: 520px;        /* ← locks to login panel height, never grows */
+  overflow: hidden;     /* ← clips any content that exceeds it */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  pointer-events: all;
+  font-family: 'TikTokSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Panel screens */
+.panel-screen { display: flex; flex-direction: column; position: relative; height: 100%; }
+.panel-screen.hidden { display: none; }
+
+/* Close button — main screen */
+.login-panel-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: rgba(0,0,0,0.05);
+  cursor: pointer; border-radius: 999px; z-index: 5;
+}
+.login-panel-close:hover { background: rgba(0,0,0,0.10); }
+.login-panel-close img { width: 20px; height: 20px; display: block; }
+
+/* Nav buttons — QR screen */
+.panel-nav-back,
+.panel-nav-close {
+  position: absolute; top: 16px;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: rgba(0,0,0,0.05);
+  cursor: pointer; border-radius: 999px; z-index: 5;
+}
+.panel-nav-back { left: 16px; }
+.panel-nav-close { right: 16px; }
+.panel-nav-back:hover,
+.panel-nav-close:hover { background: rgba(0,0,0,0.10); }
+
+.login-panel-header { padding: 56px 32px 24px; text-align: center; }
+.login-panel-title { font-size: 28px; font-weight: 700; color: #000; line-height: 1.2; }
+
+.login-panel-buttons {
+  padding: 0 52px; display: flex; flex-direction: column; gap: 12px;
+}
+.login-panel-option-btn {
+  width: 100%; height: 48px; background: rgba(0,0,0,0.05);
+  border: none; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; cursor: pointer; font-family: inherit;
+  font-size: 15px; font-weight: 600; color: #000; transition: background 0.15s;
+}
+.login-panel-option-btn:hover { background: rgba(0,0,0,0.10); }
+.login-panel-option-icon {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.login-panel-option-icon img { width: 20px; height: 20px; display: block; }
+
+.login-panel-terms {
+  padding: 16px 52px 60px; font-size: 10px;
+  color: rgba(0,0,0,0.48); line-height: 1.4; text-align: center;
+}
+.login-panel-terms a { color: #2B5DB9; text-decoration: none; }
+
+.login-panel-signup {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #000;
+}
+.login-panel-signup span { color: #FE2C55; cursor: pointer; font-weight: 600; }
+
+/* QR screen */
+.qr-title {
+  padding: 56px 32px 24px; text-align: center;
+  font-size: 28px; font-weight: 700; color: #000; line-height: 1.2;
+}
+.qr-body {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px; padding: 0 32px;
+}
+.qr-card {
+  width: 282px; height: 282px; border-radius: 60px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.06);
+  background: white;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.qr-card img { width: 224px; height: 223px; object-fit: contain; }
+.qr-instructions {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.65);
+  text-align: center;
+  width: 282px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.qr-signup {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #000;
+}
+.qr-signup span {color: #FE2C55; cursor: pointer; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="scale-wrapper" id="scaleWrap">
+  <div class="tt-root" id="ttRoot">
+
+    <!-- SIDEBAR -->
+    <div class="tt-sidebar">
+      <div class="tt-nav-container">
+        <img src="Assets/Icons/TikTok Logo.svg" width="116" height="28" alt="TikTok" />
+      </div>
+      <div class="tt-search">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="8" cy="8" r="5.5" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+          <path d="M12.5 12.5L16 16" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Search
+      </div>
+      <div class="tt-nav-section">
+        <div class="tt-nav-items">
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Home.svg" width="24" height="24" alt="" /></div>
+            For you
+          </div>
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Compass.svg" width="24" height="24" alt="" /></div>
+            Explore
+          </div>
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Frame 2036081282.svg" width="24" height="24" alt="" /></div>
+            Following
+          </div>
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Two_Person.svg" width="24" height="24" alt="" /></div>
+            Friends
+          </div>
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Bottom_Create.svg" width="24" height="24" alt="" /></div>
+            Upload
+          </div>
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Live_Wave.svg" width="24" height="24" alt="" /></div>
+            LIVE
+          </div>
+          <div class="tt-nav-item">
+            <div class="tt-nav-icon"><img src="Assets/Icons/Ellipsis_Horizontal.svg" width="24" height="24" alt="" /></div>
+            More
+          </div>
+        </div>
+        <button class="tt-left-nav-btn" onclick="openPanel()">Log in</button>
+        <div class="tt-divider"></div>
+        <div class="tt-footer">
+          <div class="tt-footer-links">
+            <span>Company</span><span>Programs</span><span>Terms &amp; Policies</span>
+          </div>
+          <div>© 2026 TikTok</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="tt-page">
+      <img src="Assets/Images/FYP.png" alt="TikTok For You Page" />
+    </div>
+
+    <!-- TOOLBAR — inside tt-root so position: absolute anchors to the 1440px canvas -->
+    <div class="tt-topnav">
+      <div class="toolbar">
+        <div class="toolbar-pills">
+          <button class="toolbar-pill-btn">
+            <img src="Assets/Icons/tiktok_logo_circle.svg" alt="" />
+            Get coin
+          </button>
+          <button class="toolbar-pill-btn">
+            <img src="Assets/Icons/SMS.svg" alt="" />
+            Get App
+          </button>
+          <button class="toolbar-pill-btn">
+            <img src="Assets/Icons/Arrow_Down_To_Line.svg" alt="" />
+            PC App
+          </button>
+        </div>
+        <button class="toolbar-login-btn" onclick="openPanel()">Login</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- OVERLAY — fixed to viewport, body child, unaffected by scale -->
+<div id="ttOverlay"></div>
+
+<!-- LOGIN PANEL — fixed to viewport, body child, unaffected by scale -->
+<div id="loginPanel">
+  <div class="login-panel">
+
+    <!-- Screen: Main options -->
+    <div class="panel-screen" id="screenMain">
+      <button class="login-panel-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" />
+      </button>
+      <div class="login-panel-header">
+        <div class="login-panel-title">Log in to TikTok</div>
+      </div>
+      <div class="login-panel-buttons">
+        <button class="login-panel-option-btn" onclick="goScreen('screenQR')">
+          <div class="login-panel-option-icon"><img src="Assets/Icons/QR_Code.svg" alt="" /></div>
+          Use QR code
+        </button>
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon"><img src="Assets/Icons/Person_Fill.svg" alt="" /></div>
+          Use phone or email
+        </button>
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon"><img src="Assets/Icons/Google.svg" alt="" /></div>
+          Continue with Google
+        </button>
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon"><img src="Assets/Icons/Facebook.svg" alt="" /></div>
+          Continue with Facebook
+        </button>
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon"><img src="Assets/Icons/Apple.svg" alt="" /></div>
+          Continue with Apple
+        </button>
+      </div>
+      <div class="login-panel-terms">
+        By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.
+      </div>
+      <div class="login-panel-signup">Don't have an account? <span>Sign up</span></div>
+    </div>
+
+    <!-- Screen: QR code -->
+    <div class="panel-screen hidden" id="screenQR">
+      <button class="panel-nav-back" onclick="goScreen('screenMain')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="panel-nav-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" width="20" height="20" />
+      </button>
+      <div class="qr-title">Log in with QR code</div>
+      <div class="qr-body">
+        <div class="qr-card">
+          <img src="Assets/Images/QR_Code.png" alt="QR Code" />
+        </div>
+        <div class="qr-instructions">
+          <p>1. Scan with your mobile device's camera</p>
+          <p>2. Confirm login on your mobile device</p>
+        </div>
+      </div>
+      <div class="qr-signup">Don't have an account? <span>Sign up</span></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function scaleToFit() {
+    const wrap = document.getElementById('scaleWrap');
+    const root = document.getElementById('ttRoot');
+    const scale = Math.min(1, window.innerWidth / 1440);
+    root.style.transform = 'scale(' + scale + ')';
+    root.style.transformOrigin = 'top left';
+    wrap.style.height = Math.round(window.innerHeight * scale) + 'px';
+  }
+  window.addEventListener('resize', scaleToFit);
+  scaleToFit();
+
+  function openPanel() {
+    goScreen('screenMain');
+    document.getElementById('ttOverlay').classList.add('open');
+    document.getElementById('loginPanel').classList.add('open');
+  }
+
+  function closePanel() {
+    document.getElementById('ttOverlay').classList.remove('open');
+    document.getElementById('loginPanel').classList.remove('open');
+  }
+
+  function goScreen(id) {
+    document.querySelectorAll('.panel-screen').forEach(function(s) {
+      s.classList.add('hidden');
+    });
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  document.getElementById('ttOverlay').addEventListener('click', closePanel);
+</script>
+
+</body>
+</html>
