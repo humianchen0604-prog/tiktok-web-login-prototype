@@ -129,7 +129,7 @@ body { margin: 0; padding: 0; }
   background: white;
   border-radius: 16px;
   width: 420px;
-  height: 520px;        /* ← locks to login panel height, never grows */
+  height: 557px;        /* ← locks to login panel height, never grows */
   overflow: hidden;     /* ← clips any content that exceeds it */
   position: relative;
   display: flex;
@@ -174,7 +174,7 @@ body { margin: 0; padding: 0; }
   padding: 0 52px; display: flex; flex-direction: column; gap: 12px;
 }
 .login-panel-option-btn {
-  width: 100%; height: 48px; background: rgba(0,0,0,0.05);
+  width: 100%; height: 52px; background: rgba(0,0,0,0.05);
   border: none; border-radius: 999px;
   display: flex; align-items: center; justify-content: center;
   position: relative; cursor: pointer; font-family: inherit;
@@ -188,11 +188,6 @@ body { margin: 0; padding: 0; }
 }
 .login-panel-option-icon img { width: 20px; height: 20px; display: block; }
 
-.login-panel-terms {
-  padding: 16px 52px 60px; font-size: 10px;
-  color: rgba(0,0,0,0.48); line-height: 1.4; text-align: center;
-}
-.login-panel-terms a { color: #2B5DB9; text-decoration: none; }
 
 .login-panel-signup {
   position: absolute;
@@ -215,13 +210,13 @@ body { margin: 0; padding: 0; }
   align-items: center; gap: 20px; padding: 0 32px;
 }
 .qr-card {
-  width: 282px; height: 282px; border-radius: 60px;
+  width: 240px; height: 240px; border-radius: 60px;
   border: 1px solid rgba(0,0,0,0.05);
   box-shadow: 0px 2px 8px rgba(0,0,0,0.06);
   background: white;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.qr-card img { width: 224px; height: 223px; object-fit: contain; }
+.qr-card img { width: 200px; height: 200px; object-fit: contain; }
 .qr-instructions {
   font-size: 11px;
   color: rgba(0, 0, 0, 0.65);
@@ -242,6 +237,140 @@ body { margin: 0; padding: 0; }
   color: #000;
 }
 .qr-signup span {color: #FE2C55; cursor: pointer; font-weight: 600; }
+
+/* ── NEW SCREENS ── */
+
+/* Global brand cursor */
+input {
+  caret-color: #FE2C55;
+}
+@supports (caret-width: 2px) {
+  input { caret-width: 2px; }
+}
+input:focus {
+  outline: none;
+}
+
+.pin-box {
+  caret-color: #FE2C55;
+}
+.phone-num-input,
+.form-input,
+.pw-input {
+  caret-color: #FE2C55;
+}
+
+/* Segmented control */
+.seg-control {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,0.05); border-radius: 999px;
+  padding: 3px; width: fit-content; margin: 0 auto;
+}
+.seg-btn {
+  padding: 7.5px 14px; border-radius: 999px; border: none;
+  background: transparent; font-family: inherit;
+  font-size: 15px; font-weight: 600; color: rgba(0,0,0,0.48);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.seg-btn.active { background: white; color: #000; box-shadow: 0px 2px 8px rgba(0,0,0,0.06); }
+
+/* Phone input row — red stroke on focus-within */
+.phone-row {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,0.05); border-radius: 10px;
+  height: 48px; overflow: hidden; transition: box-shadow 0.15s;
+}
+.phone-row:focus-within { box-shadow: none; }
+.phone-country {
+  display: flex; align-items: center; padding: 0 12px;
+  font-size: 16px; color: #000;
+  border-right: 0.5px solid rgba(0,0,0,0.17);
+  height: 20px; flex-shrink: 0; white-space: nowrap;
+}
+.phone-num-input {
+  flex: 1; height: 100%; border: none; background: transparent;
+  padding: 0 12px; font-size: 16px; font-family: inherit;
+  color: #202020; outline: none; caret-color: #FE2C55;
+}
+.phone-num-input::placeholder { color: rgba(0,0,0,0.34); }
+
+/* Standard form input — darker fill on focus, NO red border */
+.form-input {
+  width: 100%; height: 48px; background: rgba(0,0,0,0.05);
+  border: none; border-radius: 10px; padding: 0 16px;
+  font-size: 16px; font-family: inherit; color: #202020;
+  outline: none; caret-color: #FE2C55; transition: background 0.15s;
+}
+.form-input::placeholder { color: rgba(0,0,0,0.34); }
+.form-input:focus { background: rgba(0,0,0,0.05); box-shadow: none; outline: none; }
+
+/* Password input — darker fill on focus, NO red border */
+.pw-input-wrap { position: relative; }
+.pw-input {
+  width: 100%; height: 48px; background: rgba(0,0,0,0.05);
+  border: none; border-radius: 10px; padding: 0 48px 0 16px;
+  font-size: 16px; font-family: inherit; color: #202020;
+  outline: none; caret-color: #FE2C55; transition: background 0.15s;
+}
+.pw-input::placeholder { color: rgba(0,0,0,0.34); }
+.pw-input:focus { background: rgba(0,0,0,0.05); box-shadow: none; outline: none; }
+.pw-toggle-btn {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.pw-toggle-icon img {
+  width: 30px; height: 30px; display: block; opacity: 0.48;
+}
+.pw-toggle-icon:hover img { opacity: 0.72; }
+
+/* Use password / code link */
+.use-pw-link {
+  background: none; border: none; font-family: inherit;
+  font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.48);
+  cursor: pointer; text-align: left; padding: 0 8px;
+}
+.use-pw-link:hover { color: #FE2C55; }
+
+/* Continue button */
+.continue-btn {
+  width: 100%; height: 52px;
+  background: rgba(254,44,85,0.4); color: white;
+  border: none; border-radius: 999px;
+  font-size: 16px; font-weight: 600; font-family: inherit;
+  cursor: not-allowed; transition: background 0.2s;
+}
+.continue-btn.ready { background: #FE2C55; cursor: pointer; }
+.continue-btn.ready:hover { background: #E5284D; }
+
+/* PIN boxes — red stroke on focus */
+.pin-row { display: flex; gap: 6px; justify-content: center; }
+.pin-box {
+  width: 45px; height: 52px;
+  background: rgba(0,0,0,0.05); border: none; border-radius: 10px;
+  text-align: center; font-size: 20px; font-weight: 600;
+  font-family: inherit; color: #202020; outline: none;
+  caret-color: #FE2C55; transition: box-shadow 0.15s;
+}
+.pin-box:focus { box-shadow: inset 0 0 0 1.5px #FE2C55; outline: none; }
+
+/* Terms block — absolutely pinned above signup */
+.screen-terms-block {
+  position: absolute; bottom: 52px; left: 0; right: 0;
+  font-size: 10px; color: rgba(0,0,0,0.48);
+  line-height: 1.4; text-align: center; padding: 0 32px;
+}
+.screen-terms-block a { color: #2B5DB9; text-decoration: none; }
+
+.screen-title {
+  padding: 64px 32px 32px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
 </style>
 </head>
 <body>
@@ -352,7 +481,7 @@ body { margin: 0; padding: 0; }
           <div class="login-panel-option-icon"><img src="Assets/Icons/QR_Code.svg" alt="" /></div>
           Use QR code
         </button>
-        <button class="login-panel-option-btn">
+        <button class="login-panel-option-btn" onclick="goScreen('screenPhone')">
           <div class="login-panel-option-icon"><img src="Assets/Icons/Person_Fill.svg" alt="" /></div>
           Use phone or email
         </button>
@@ -369,10 +498,10 @@ body { margin: 0; padding: 0; }
           Continue with Apple
         </button>
       </div>
-      <div class="login-panel-terms">
+      <div class="screen-terms-block">
         By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.
       </div>
-      <div class="login-panel-signup">Don't have an account? <span>Sign up</span></div>
+      <div class="login-panel-signup">Don't have an account? <span onclick="goScreen('screenSignUp')">Sign up</span></div>
     </div>
 
     <!-- Screen: QR code -->
@@ -395,7 +524,209 @@ body { margin: 0; padding: 0; }
           <p>2. Confirm login on your mobile device</p>
         </div>
       </div>
-      <div class="qr-signup">Don't have an account? <span>Sign up</span></div>
+      <div class="screen-terms-block">By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.</div>
+      <div class="qr-signup">Don't have an account? <span onclick="goScreen('screenSignUp')">Sign up</span></div>
+    </div>
+
+    <!-- Screen: Phone login -->
+    <div class="panel-screen hidden" id="screenPhone">
+      <button class="panel-nav-back" onclick="goScreen('screenMain')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="panel-nav-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" width="20" height="20" />
+      </button>
+      <div class="screen-title">Log in</div>
+      <div style="padding: 0 64px; display: flex; flex-direction: column; gap: 24px;">
+        <div class="seg-control">
+          <button class="seg-btn active" onclick="switchPhoneTab('phone')">Phone</button>
+          <button class="seg-btn" onclick="switchPhoneTab('email')">Username/Email</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="phone-row">
+            <div class="phone-country">US +1
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="margin-left:4px;">
+                <path d="M4 6l4 4 4-4" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <input class="phone-num-input" id="phoneInput" type="tel" maxlength="10" placeholder="Phone Number" oninput="checkPhoneReady()" />
+          </div>
+          <button class="use-pw-link" onclick="goScreen('screenPhonePass')">Use password</button>
+        </div>
+        <button class="continue-btn" id="phoneContinueBtn" onclick="goScreen('screenPhoneCode')">Continue</button>
+      </div>
+      <div class="screen-terms-block">By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.</div>
+      <div class="login-panel-signup">Don't have an account? <span onclick="goScreen('screenSignUp')">Sign up</span></div>
+    </div>
+
+    <!-- Screen: 6-digit code -->
+    <div class="panel-screen hidden" id="screenPhoneCode">
+      <button class="panel-nav-back" onclick="goScreen('screenPhone')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="panel-nav-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" width="20" height="20" />
+      </button>
+      <div class="screen-title">Enter 6-digit code</div>
+      <div style="padding: 0 64px; display: flex; flex-direction: column; gap: 12px;">
+        <p style="font-size: 13px; color: rgba(0,0,0,0.48); line-height: 1.3;">Your code was sent to +1 *******777</p>
+        <div class="pin-row">
+          <input class="pin-box" type="tel" maxlength="1" />
+          <input class="pin-box" type="tel" maxlength="1" />
+          <input class="pin-box" type="tel" maxlength="1" />
+          <input class="pin-box" type="tel" maxlength="1" />
+          <input class="pin-box" type="tel" maxlength="1" />
+          <input class="pin-box" type="tel" maxlength="1" />
+        </div>
+        <div style="display:flex; align-items:center; gap:4px; justify-content:center; margin-top: 36px;">
+          <button id="resendBtn" style="background:none; border:none; font-family:inherit; font-size:16px; font-weight:600; color:#FE2C55; opacity:0.4; cursor:default; padding:0;">Resend code</button>
+          <span id="resendTimer" style="font-size:15px; color:rgba(0,0,0,0.34);">10s</span>
+        </div>
+      </div>
+      <div class="screen-terms-block">By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.</div>
+      <div class="login-panel-signup">Don't have an account? <span onclick="goScreen('screenSignUp')">Sign up</span></div>
+    </div>
+
+    <!-- Screen: Phone + password -->
+    <div class="panel-screen hidden" id="screenPhonePass">
+      <button class="panel-nav-back" onclick="goScreen('screenPhone')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="panel-nav-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" width="20" height="20" />
+      </button>
+      <div class="screen-title">Log in</div>
+      <div style="padding: 0 64px; display: flex; flex-direction: column; gap: 24px;">
+        <div class="seg-control">
+          <button class="seg-btn active">Phone</button>
+          <button class="seg-btn" onclick="goScreen('screenEmail')">Username/Email</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="phone-row">
+            <div class="phone-country">US +1
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="margin-left:4px;">
+                <path d="M4 6l4 4 4-4" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <input class="phone-num-input" type="tel" maxlength="10" placeholder="Phone Number" oninput="checkPhonePassReady()" id="phonePassInput" />
+          </div>
+          <div class="pw-input-wrap">
+            <input class="pw-input" id="phonePassPw" type="password" placeholder="Password" oninput="checkPhonePassReady()" />
+            <button class="pw-toggle-btn pw-toggle-icon" onclick="togglePhonePassPw(this)" aria-label="Toggle password">
+              <img src="Assets/Icons/Eye_Close.svg" id="phonePassPwIcon" width="30" height="30" alt="Show password" />
+            </button>
+          </div>
+          <button class="use-pw-link" onclick="goScreen('screenPhone')">Use code</button>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+          <button class="continue-btn" id="phonePassContinueBtn">Continue</button>
+          <button style="background:none; border:none; font-family:inherit; font-size:14px; font-weight:600; color:rgba(0,0,0,0.48); cursor:pointer;">Forget password?</button>
+        </div>
+      </div>
+      <div class="screen-terms-block">By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.</div>
+      <div class="login-panel-signup">Don't have an account? <span onclick="goScreen('screenSignUp')">Sign up</span></div>
+    </div>
+
+    <!-- Screen: Username/Email login -->
+    <div class="panel-screen hidden" id="screenEmail">
+      <button class="panel-nav-back" onclick="goScreen('screenMain')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="panel-nav-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" width="20" height="20" />
+      </button>
+      <div class="screen-title">Log in</div>
+      <div style="padding: 0 64px; display: flex; flex-direction: column; gap: 24px;">
+        <div class="seg-control">
+          <button class="seg-btn" onclick="goScreen('screenPhone')">Phone</button>
+          <button class="seg-btn active">Username/Email</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <input class="form-input" type="text" placeholder="Username/Email" oninput="checkEmailReady()" id="emailUsernameInput" />
+          <div class="pw-input-wrap">
+            <input class="pw-input" id="emailPwInput" type="password" placeholder="Password" oninput="checkEmailReady()" />
+            <button class="pw-toggle-btn pw-toggle-icon" onclick="toggleEmailPw(this)" aria-label="Toggle password">
+              <img src="Assets/Icons/Eye_Close.svg" id="emailPwIcon" width="30" height="30" alt="Show password" />
+            </button>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+          <button class="continue-btn" id="emailContinueBtn">Continue</button>
+          <button style="background:none; border:none; font-family:inherit; font-size:14px; font-weight:600; color:rgba(0,0,0,0.48); cursor:pointer;">Forget password?</button>
+        </div>
+      </div>
+      <div class="screen-terms-block">By continuing, you agree to TikTok's <a href="#">Terms of Service</a> and confirm that you have read TikTok's <a href="#">Privacy Policy</a>.</div>
+      <div class="login-panel-signup">Don't have an account? <span onclick="goScreen('screenSignUp')">Sign up</span></div>
+    </div>
+
+
+    <!-- Screen: Sign up -->
+    <div class="panel-screen hidden" id="screenSignUp">
+
+      <button class="panel-nav-back" onclick="goScreen('screenMain')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#202020" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button class="panel-nav-close" onclick="closePanel()">
+        <img src="Assets/Icons/X_Mark.svg" alt="Close" width="20" height="20" />
+      </button>
+
+      <div class="screen-title">Sign up for TikTok</div>
+
+      <div style="padding: 0 64px; display: flex; flex-direction: column; gap: 12px;">
+
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon">
+            <img src="Assets/Icons/Person_Fill.svg" alt="" />
+          </div>
+          Use phone or email
+        </button>
+
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon">
+            <img src="Assets/Icons/Google.svg" alt="" />
+          </div>
+          Continue with Google
+        </button>
+
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon">
+            <img src="Assets/Icons/Facebook.svg" alt="" />
+          </div>
+          Continue with Facebook
+        </button>
+
+        <button class="login-panel-option-btn">
+          <div class="login-panel-option-icon">
+            <img src="Assets/Icons/Apple.svg" alt="" />
+          </div>
+          Continue with AppleID
+        </button>
+
+      </div>
+
+      <div class="screen-terms-block">
+        By continuing, you agree to TikTok's
+        <a href="#">Terms of Service</a> and confirm that you have read
+        TikTok's <a href="#">Privacy Policy</a>.
+      </div>
+
+      <div class="login-panel-signup">
+        Already have an account?
+        <span onclick="goScreen('screenMain')">Log in</span>
+      </div>
+
     </div>
 
   </div>
@@ -429,6 +760,97 @@ body { margin: 0; padding: 0; }
       s.classList.add('hidden');
     });
     document.getElementById(id).classList.remove('hidden');
+    if (id === 'screenPhoneCode') {
+      initPinBoxes();
+      startResendCountdown();
+    }
+  }
+
+  function switchPhoneTab(tab) {
+    if (tab === 'email') goScreen('screenEmail');
+  }
+
+  function checkPhoneReady() {
+    var val = document.getElementById('phoneInput').value.replace(/\D/g,'');
+    document.getElementById('phoneContinueBtn').classList.toggle('ready', val.length >= 10);
+  }
+
+  function checkPhonePassReady() {
+    var phone = document.getElementById('phonePassInput').value.replace(/\D/g,'');
+    var pw = document.getElementById('phonePassPw').value;
+    document.getElementById('phonePassContinueBtn').classList.toggle('ready', phone.length >= 10 && pw.length >= 1);
+  }
+
+  function checkEmailReady() {
+    var user = document.getElementById('emailUsernameInput').value;
+    var pw = document.getElementById('emailPwInput').value;
+    document.getElementById('emailContinueBtn').classList.toggle('ready', user.length >= 1 && pw.length >= 1);
+  }
+
+  function togglePwField(inputId, btn) {
+    var inp = document.getElementById(inputId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? 'Show' : 'Hide';
+  }
+
+  function initPinBoxes() {
+    var boxes = document.querySelectorAll('.pin-box');
+    boxes.forEach(function(box, i) {
+      box.value = '';
+      box.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g,'').slice(0,1);
+        if (this.value && i < boxes.length - 1) boxes[i+1].focus();
+      });
+      box.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && i > 0) boxes[i-1].focus();
+      });
+    });
+  }
+
+  function startResendCountdown() {
+    var t = 10;
+    var btn = document.getElementById('resendBtn');
+    var timer = document.getElementById('resendTimer');
+    btn.style.opacity = '0.4'; btn.style.cursor = 'default';
+    timer.textContent = t + 's';
+    var interval = setInterval(function() {
+      t--;
+      if (t <= 0) {
+        clearInterval(interval);
+        timer.textContent = '';
+        btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+      } else {
+        timer.textContent = t + 's';
+      }
+    }, 1000);
+  }
+
+  function togglePhonePassPw(btn) {
+    var inp = document.getElementById('phonePassPw');
+    var icon = document.getElementById('phonePassPwIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.src = 'Assets/Icons/Eye_Open.svg';
+      icon.alt = 'Hide password';
+    } else {
+      inp.type = 'password';
+      icon.src = 'Assets/Icons/Eye_Close.svg';
+      icon.alt = 'Show password';
+    }
+  }
+
+  function toggleEmailPw(btn) {
+    var inp = document.getElementById('emailPwInput');
+    var icon = document.getElementById('emailPwIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.src = 'Assets/Icons/Eye_Open.svg';
+      icon.alt = 'Hide password';
+    } else {
+      inp.type = 'password';
+      icon.src = 'Assets/Icons/Eye_Close.svg';
+      icon.alt = 'Show password';
+    }
   }
 
   document.getElementById('ttOverlay').addEventListener('click', closePanel);
